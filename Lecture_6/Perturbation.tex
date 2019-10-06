@@ -1,0 +1,105 @@
+% \documentclass[handout]{beamer} % Suppress the pauses to print as handout
+\documentclass[aspectratio=169, 11pt]{beamer}
+% \documentclass[11pt]{beamer} % Comment the line above and use this line for 4:3 aspect ratio screens
+\usepackage{advdate}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{color}
+\usepackage{helvet}
+\usepackage{hyperref}
+\usepackage{mathpazo}
+\usepackage{multirow}
+
+\usetheme{CambridgeUS}
+\usecolortheme{dolphin}
+\usefonttheme[onlymath]{serif}
+
+% Define colors considering color blindness
+% Use MATLAB default color palette
+\definecolor{blue}{rgb}{0, 0.447, 0.741}
+\definecolor{red}{rgb}{0.85, 0.325, 0.098}
+\definecolor{yellow}{rgb}{0.929, 0.694, 0.125}
+\definecolor{purple}{rgb}{0.494, 0.184, 0.556}
+\definecolor{green}{rgb}{0.466, 0.674, 0.188}
+\definecolor{cyan}{rgb}{0.301, 0.745, 0.933}
+\definecolor{magenta}{rgb}{0.635, 0.078, 0.184}
+\definecolor{amber}{rgb}{1.0, 0.75, 0.0}
+
+% Self-defined background and frametitle colors
+\definecolor{MyBackground}{RGB}{255, 255, 230}
+% Uncomment the following line for plain white background
+% \definecolor{MyBackground}{RGB}{255, 255, 255}
+\setbeamercolor{background canvas}{bg=MyBackground!40}
+\setbeamercolor{frametitle}{bg=MyBackground!80}
+% Customize word colors
+\setbeamercolor{frametitle}{fg=blue}
+\setbeamercolor{title}{fg=blue}
+\setbeamercolor{itemize item}{fg=blue}
+\setbeamercolor{itemize subitem}{fg=blue}
+\setbeamercolor{enumerate item}{fg=blue}
+\setbeamercolor{enumerate subitem}{fg=blue}
+\setbeamercolor{button}{bg=MyBackground,fg=blue}
+
+% Page number on the bottom
+\setbeamertemplate{footline}[frame number]
+\setbeamerfont{footline}{size=\fontsize{10}{12}\selectfont}
+\setbeamercolor{page number in head/foot}{fg=blue}
+% No navigation symbols
+\setbeamertemplate{navigation symbols}{}
+% No headlines
+\setbeamertemplate{headline}{}
+% Appendix slides don't count
+\newcommand{\backupbegin}{
+   \newcounter{framenumberappendix}
+   \setcounter{framenumberappendix}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+   \addtocounter{framenumberappendix}{-\value{framenumber}}
+   \addtocounter{framenumber}{\value{framenumberappendix}}
+}
+% Add section title at the beginning of each part
+\AtBeginSection[]{
+  \begin{frame}[noframenumbering, plain]
+  \vfill
+  \centering
+    \begin{beamercolorbox}[sep=8pt, center, shadow=true, rounded=true]{title}
+      \usebeamerfont{frametitle}\insertsectionhead\par%
+    \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
+% New theorem environments
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+% Set pause options to be invisible instead of transparent
+\setbeamercovered{invisible}
+
+\begin{document}
+\title{Lecture 6 \\ Perturbation Methods}
+\author[Wu]{Peifan Wu}
+\date{UBC}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Local Approximations}
+  \begin{itemize}
+    \item[--] DSGE models are characterized by \textcolor{blue}{a set of nonlinear equations}
+    \bigskip
+    \item[--] Use local approximation to transform the nonlinear system into a system of linear equations
+    \bigskip
+    \item[--] Two requirements: small shocks, no occasionally binding constraints
+  \end{itemize}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,283 @@
+% \documentclass[handout]{beamer} % Suppress the pauses to print as handout
+\documentclass[aspectratio=169, 11pt]{beamer}
+% \documentclass[11pt]{beamer} % Comment the line above and use this line for 4:3 aspect ratio screens
+\usepackage{advdate}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{color}
+\usepackage{helvet}
+\usepackage{hyperref}
+\usepackage{mathpazo}
+\usepackage{multirow}
+
+\usetheme{CambridgeUS}
+\usecolortheme{dolphin}
+\usefonttheme[onlymath]{serif}
+
+% Define colors considering color blindness
+% Use MATLAB default color palette
+\definecolor{blue}{rgb}{0, 0.447, 0.741}
+\definecolor{red}{rgb}{0.85, 0.325, 0.098}
+\definecolor{yellow}{rgb}{0.929, 0.694, 0.125}
+\definecolor{purple}{rgb}{0.494, 0.184, 0.556}
+\definecolor{green}{rgb}{0.466, 0.674, 0.188}
+\definecolor{cyan}{rgb}{0.301, 0.745, 0.933}
+\definecolor{magenta}{rgb}{0.635, 0.078, 0.184}
+\definecolor{amber}{rgb}{1.0, 0.75, 0.0}
+
+% Self-defined background and frametitle colors
+\definecolor{MyBackground}{RGB}{255, 255, 230}
+% Uncomment the following line for plain white background
+% \definecolor{MyBackground}{RGB}{255, 255, 255}
+\setbeamercolor{background canvas}{bg=MyBackground!40}
+\setbeamercolor{frametitle}{bg=MyBackground!80}
+% Customize word colors
+\setbeamercolor{frametitle}{fg=blue}
+\setbeamercolor{title}{fg=blue}
+\setbeamercolor{itemize item}{fg=blue}
+\setbeamercolor{itemize subitem}{fg=blue}
+\setbeamercolor{enumerate item}{fg=blue}
+\setbeamercolor{enumerate subitem}{fg=blue}
+\setbeamercolor{button}{bg=MyBackground,fg=blue}
+
+% Page number on the bottom
+\setbeamertemplate{footline}[frame number]
+\setbeamerfont{footline}{size=\fontsize{10}{12}\selectfont}
+\setbeamercolor{page number in head/foot}{fg=blue}
+% No navigation symbols
+\setbeamertemplate{navigation symbols}{}
+% No headlines
+\setbeamertemplate{headline}{}
+% Appendix slides don't count
+\newcommand{\backupbegin}{
+   \newcounter{framenumberappendix}
+   \setcounter{framenumberappendix}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+   \addtocounter{framenumberappendix}{-\value{framenumber}}
+   \addtocounter{framenumber}{\value{framenumberappendix}}
+}
+% Add section title at the beginning of each part
+\AtBeginSection[]{
+  \begin{frame}[noframenumbering, plain]
+  \vfill
+  \centering
+    \begin{beamercolorbox}[sep=8pt, center, shadow=true, rounded=true]{title}
+      \usebeamerfont{frametitle}\insertsectionhead\par%
+    \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
+% New theorem environments
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+% Set pause options to be invisible instead of transparent
+\setbeamercovered{invisible}
+
+\begin{document}
+\title{Lecture 2 \\ Value Function Iteration with Discretization}
+\author[Wu]{Peifan Wu}
+\date{UBC}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Stochastic Growth Model}
+  Consider the following problem:
+  \begin{align*}
+    V\left(z,k\right) & =\max_{c,k,l}u\left(c\right)+v\left(1-l\right)+\beta\mathbb{E}V\left(z',k'\right)\\
+     & \text{s.t.}\\
+    c+k' & =\exp\left(z\right)f\left(k.l\right)+\left(1-\delta\right)k\\
+    z' & =\rho z+\epsilon'\\
+    c,k' & \geqslant0\\
+    l & \in\left(0,1\right)\\
+    \epsilon & \sim\mathcal{N}\left(0,\sigma^{2}\right)
+  \end{align*}
+  We want to solve policy functions $c\left(z,k\right),k\left(z,k\right),l\left(z,k\right)$ \\
+  \medskip
+  We solve them by
+  \begin{itemize}
+    \item[--] Discretization of the state space $\left(Z, K\right)$
+    \item[--] Value Function Iteration
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Discretize AR(1) Process}
+  Two dominant methodologies:
+  \bigskip
+
+  \begin{itemize}
+    \item[1.] \textcolor{red}{Tauchen method} (Tauchen, EL 1986)
+    \begin{itemize}
+      \item[--] Not restricted to normal innovations
+    \end{itemize}
+    \bigskip
+    \item[2.] \textcolor{red}{Rouwenhorst method} (Kopecky-Suen, RED 2010)
+    \begin{itemize}
+      \item[--] Works better as $\rho\to1$
+      \item[--] Replicate exactly unconditional mean, variance, and first-order autocorrelation
+      \item[--] \textcolor{blue}{Multivariate version}: Terry-Knotek (EL, 2011), Galindev-Lkhagvasuren (JEDC, 2010)
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Tauchen Method}
+  AR(1) process $y'=\rho y+\epsilon $, $\epsilon \sim \mathcal{N}\left(0,\sigma^2_{\epsilon}\right)$ \\
+  \bigskip
+
+  \textcolor{red}{Choice of Points}: The maximum value $y_{N}$ should be multiple $m$ (e.g. $m=3$) of the unconditional standard deviation,
+  \[
+    y_{N}=m\sqrt{\frac{\sigma_{\epsilon}^{2}}{1-\rho^{2}}}
+  \]
+  Let $y_{1}=-y_{N}$ and $\left\{ y_{2},y_{3},\ldots,y_{N-1}\right\}$ equally spaced. \\
+  \bigskip
+  \textcolor{red}{Transition Probabilities}: $d=y_{i}-y_{i-1}$, $\pi_{ij}$ is the transition probability from $i$ to $j$,
+  \begin{align*}
+    \pi_{i1} & =F\left(\frac{y_{1}+d/2-\rho y_{i}}{\sigma_{\epsilon}}\right)\\
+    \pi_{ij} & =F\left(\frac{y_{j}+d/2-\rho y_{i}}{\sigma_{\epsilon}}\right)-F\left(\frac{y_{j}-d/2-\rho y_{i}}{\sigma_{\epsilon}}\right)\\
+    \pi_{iN} & =1-F\left(\frac{y_{N}-d/2-\rho y_{i}}{\sigma_{\epsilon}}\right)
+  \end{align*}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Rouwenhorst Method}
+  AR(1) process $y'=\rho y+\epsilon $, $\epsilon \sim \mathcal{N}\left(0,\sigma^2_{\epsilon}\right)$ \\
+  \bigskip
+
+  \textcolor{red}{Choice of Points}: Let $y_{1}=-y_{N}$ and $\left\{ y_{2},y_{3},\ldots,y_{N-1}\right\}$ equally spaced,
+  \[
+    y_{N}=\sqrt{\frac{\sigma_{\epsilon}^{2}}{1-\rho^{2}}}\sqrt{N-1}
+  \]
+  \bigskip
+  \textcolor{red}{Transition Matrix}: Let $p=\frac{1+\rho}{2}$
+  \begin{itemize}
+    \item[--] For $N=2$,
+    \[
+      \Pi_{2}=\left[\begin{array}{cc}
+      p & 1-p\\
+      1-p & p
+      \end{array}\right]
+    \]
+    \item[--] For $N\geqslant3$,
+    \[
+      \Pi_{N}=p\left[\begin{array}{cc}
+      \Pi_{N-1} & \mathbf{0}\\
+      \mathbf{0}' & 0
+      \end{array}\right]+p\left[\begin{array}{cc}
+      0 & \mathbf{0}'\\
+      \mathbf{0} & \Pi_{N-1}
+      \end{array}\right]+\left(1-p\right)\left[\begin{array}{cc}
+      \mathbf{0}' & 0\\
+      \Pi_{N-1} & \mathbf{0}
+      \end{array}\right]+\left(1-p\right)\left[\begin{array}{cc}
+      \mathbf{0} & \Pi_{N-1}\\
+      0 & \mathbf{0}'
+      \end{array}\right]
+    \]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Discretize Capital Grid}
+  \begin{itemize}
+    \item[--] Evenly spaced grid of $N$ points:
+    \[
+      k_{i}=k_{1}+\left(i-1\right)\eta\text{ where }\eta=\frac{k_{N}-k_{1}}{N-1}
+    \]
+    \item[--] In general, \textcolor{red}{more points where policy functions have curvature}.
+    \item[--] A grid denser close to $k_{1}$:
+    \[
+      k_{i}=k_{1}+\exp\left[\left(i-1\right)\eta\right]\text{ where }\eta=\frac{\log\left(k_{N}-k_{1}\right)}{N-1}
+    \]
+    \item[--] How do we choose $k_{1},k_{N}$? Solve the steady state $k^{*}$, choose $k_{1}<k^{*}<k_{N}$
+    \item[--] Grid size depends on the size and persistence of $z$. Keep $k_{1}$ away from zero.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Choice of Leisure}
+  \begin{itemize}
+    \item[--] At every $\left(k_{i}, k_{j}, z_{s}\right)$ corresponding to a grid point for the variables $\left(k,k',z\right)$ we have the intratemporal FOC:
+    \[
+      u_{c}\left(\exp\left(z\right)f\left(k,l\right)+\left(1-\delta\right)k_{i}-k_{j}\right)\cdot\exp\left(z\right)f_{l}\left(k,l\right)=-v_{l}\left(1-l\right)
+    \]
+    \item[--] RHS is increasing in $l$ and the LFS decreasing in $l$
+    \item[--] $l=0$ ruled out -- Inada condition on $f$; $l=1$ ruled out -- Inada condition on $v$;
+    \item[--] Use bisection method to solve for $l$
+    \item[--] Call the solution $l\left(k_{i}, k_{j}, z_{s}\right)$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Algorithm}
+  \begin{itemize}
+    \item[1.] Define a 3-dimensional array $R$ of size $N, N, S$ with typical element $\left(k_{i}, k_{j}, z_{s}\right)$ containing the return function
+    \[
+      R\left(k_{i},k_{j},z_{s}\right)=u\left(\exp\left(z_{s}\right)f\left(k_{i}\right)+\left(1-\delta\right)k_{i}-k_{j}\right)+v\left(1-l\left(k_{i},k_{j},z_{s}\right)\right)
+    \]
+    Check whether the argument of $u$ at point $(i,j,s)$ is negative: if so, set $R\left(k_{i},k_{j},z_{s}\right)$ to a very large negative number
+    \item[2.] Start with an initial guess of the value function matrix $V^{0}$. Either the null array, or
+    \[
+      V^{0}\left(k_{i},z_{s}\right)=\frac{u\left(\exp\left(z_{s}\right)f\left(k_{i},l^{*}\right)-\delta k_{i}\right)+v\left(1-l^{*}\right)}{1-\beta}
+    \]
+    \item[3.] Denote the number of iterations by $t$. Update value function by selecting
+    \[
+      V^{t+1}\left(k_{i},z_{s}\right)=\max_{j}\left\{ R\left(k_{i},k_{j},z_{s}\right)+\beta\sum_{s'=1}^{S}\Pi\left(z_{s},z_{s}'\right)V^{t}\left(k_{j},z_{s}'\right)\right\}
+    \]
+    \item[4.] Store the $\arg\max$ (Optional: \textcolor{blue}{Howard improvement step})
+    \item[5.] Check convergence: report success if $||V^{t+1}-V^{t}||<\epsilon$ otherwise go back to \textcolor{blue}{3.}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Additional Checks}
+  \begin{itemize}
+    \item[1.] Check that the policy function \textcolor{red}{isn't constrained by the discrete state space}.
+    \begin{itemize}
+      \item[--] Relax the bounds of the grid for $k$, redo the value function iteration if constrained.
+    \end{itemize}
+    \bigskip
+    \item[2.] Check that the \textcolor{red}{error tolerance is small enough}.
+    \begin{itemize}
+      \item[--] If a small reduction in $\epsilon$ results in large changes in the value of policy functions, the tolerance is too high.
+      \item[--] Reduce $\epsilon$ until the solutions are insensitive to further reductions.
+    \end{itemize}
+    \bigskip
+    \item[3.] Check that \textcolor{red}{grid size is dense enough}.
+    \begin{itemize}
+      \item[--] The grid is too sparse if an increase in grid density results in a different solution.
+      \item[--] Keep increasing grid size until the solutions are insensitive to further increases.
+    \end{itemize}
+  \end{itemize}
+  \bigskip
+  Discretization is considerably low, but it's the most robust method.
+\end{frame}
+
+\begin{frame}
+\frametitle{Howard Improvement Step}
+  \begin{itemize}
+    \item[--] Updating policy function is \textcolor{red}{the most time-consuming}.
+    \bigskip
+    \item[--] \textcolor{red}{Idea}: Update the value function without updating the policy function occasionally.
+    \item[--] The policy function tends to converge faster than the value function.
+    \bigskip
+    \item[--] \textcolor{red}{Implementation}: Choose $H$, iterate value function $H$ times using the existing policy function without updating.
+    \item[--] Too high $H$ may result in a value function moving further from the true one. A good idea is to increase $H$ after each iteration, or use the Howard algorithm only after a few steps of the value function iteration.
+  \end{itemize}
+\end{frame}
+
+
+\end{document}

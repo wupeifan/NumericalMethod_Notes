@@ -1,6 +1,26 @@
-*.i
-*.ii
-*.gpu
-*.ptx
-*.cubin
-*.fatbin
+# LaTeX temporary files
+*.aux
+*.log
+*.toc
+
+
+# Latexmk
+*.fdb_latexmk
+
+# SyncTeX
+*.synctex.gz
+
+# LaTeX Beamer
+*.snm
+*.vrb
+*.nav
+*.out
+*.fls
+
+# BibTeX
+*.bbl
+*.blg
+
+# Lyx
+*.lyx
+*.lyx~

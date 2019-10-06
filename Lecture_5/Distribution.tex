@@ -1,0 +1,154 @@
+% \documentclass[handout]{beamer} % Suppress the pauses to print as handout
+\documentclass[aspectratio=169, 11pt]{beamer}
+% \documentclass[11pt]{beamer} % Comment the line above and use this line for 4:3 aspect ratio screens
+\usepackage{advdate}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{color}
+\usepackage{helvet}
+\usepackage{hyperref}
+\usepackage{mathpazo}
+\usepackage{multirow}
+
+\usetheme{CambridgeUS}
+\usecolortheme{dolphin}
+\usefonttheme[onlymath]{serif}
+
+% Define colors considering color blindness
+% Use MATLAB default color palette
+\definecolor{blue}{rgb}{0, 0.447, 0.741}
+\definecolor{red}{rgb}{0.85, 0.325, 0.098}
+\definecolor{yellow}{rgb}{0.929, 0.694, 0.125}
+\definecolor{purple}{rgb}{0.494, 0.184, 0.556}
+\definecolor{green}{rgb}{0.466, 0.674, 0.188}
+\definecolor{cyan}{rgb}{0.301, 0.745, 0.933}
+\definecolor{magenta}{rgb}{0.635, 0.078, 0.184}
+\definecolor{amber}{rgb}{1.0, 0.75, 0.0}
+
+% Self-defined background and frametitle colors
+\definecolor{MyBackground}{RGB}{255, 255, 230}
+% Uncomment the following line for plain white background
+% \definecolor{MyBackground}{RGB}{255, 255, 255}
+\setbeamercolor{background canvas}{bg=MyBackground!40}
+\setbeamercolor{frametitle}{bg=MyBackground!80}
+% Customize word colors
+\setbeamercolor{frametitle}{fg=blue}
+\setbeamercolor{title}{fg=blue}
+\setbeamercolor{itemize item}{fg=blue}
+\setbeamercolor{itemize subitem}{fg=blue}
+\setbeamercolor{enumerate item}{fg=blue}
+\setbeamercolor{enumerate subitem}{fg=blue}
+\setbeamercolor{button}{bg=MyBackground,fg=blue}
+
+% Page number on the bottom
+\setbeamertemplate{footline}[frame number]
+\setbeamerfont{footline}{size=\fontsize{10}{12}\selectfont}
+\setbeamercolor{page number in head/foot}{fg=blue}
+% No navigation symbols
+\setbeamertemplate{navigation symbols}{}
+% No headlines
+\setbeamertemplate{headline}{}
+% Appendix slides don't count
+\newcommand{\backupbegin}{
+   \newcounter{framenumberappendix}
+   \setcounter{framenumberappendix}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+   \addtocounter{framenumberappendix}{-\value{framenumber}}
+   \addtocounter{framenumber}{\value{framenumberappendix}}
+}
+% Add section title at the beginning of each part
+\AtBeginSection[]{
+  \begin{frame}[noframenumbering, plain]
+  \vfill
+  \centering
+    \begin{beamercolorbox}[sep=8pt, center, shadow=true, rounded=true]{title}
+      \usebeamerfont{frametitle}\insertsectionhead\par%
+    \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
+% New theorem environments
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+% Set pause options to be invisible instead of transparent
+\setbeamercovered{invisible}
+
+\begin{document}
+\title{Lecture 5 \\ Approximating Distribution}
+\author[Wu]{Peifan Wu}
+\date{UBC}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Approaches}
+  \begin{itemize}
+    \item[--] Continuum of households makes the wealth distribution an \textcolor{red}{infinite dimensional object} in the state space
+    \item[--] Need approximation
+    \bigskip
+    \item[--] Several approaches beyond Monte-Carlo simulation
+    \begin{itemize}
+      \item[1.] Discretization of the density function
+      \item[2.] Eigenvector method
+      \item[3.] Parametrizing in exponential family
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Discretization of the Invariant Density Function}
+  \begin{itemize}
+    \item[--] The grid should be finer than the one we used to compute the optimal savings rule
+    \bigskip
+    \item[--] Choose some initial density function $\lambda^{0}\left(a_{k},y_{i}\right)$
+    \bigskip
+    \item[--] For every $\left(a_{k},y_{j}\right)$ on the grid:
+    \begin{align*}
+      \lambda^{1}\left(a_{k},y_{j}\right) & =\sum_{y_{i}\in Y}\pi_{ij}\sum_{m\in M_{i}}\frac{a_{k+1}-g\left(a_{m},y_{i}\right)}{a_{k+1}-a_{k}}\lambda^{0}\left(a_{m},y_{i}\right)\\
+      \lambda^{1}\left(a_{k+1},y_{j}\right) & =\sum_{y_{i}\in Y}\pi_{ij}\sum_{m\in M_{i}}\frac{g\left(a_{m}.y_{i}\right)-a_{k}}{a_{k+1}-a_{k}}\lambda^{0}\left(a_{m},y_{i}\right)
+    \end{align*}
+    where $M_{i}=\left\{ m=1,\ldots,N|a_{k}\leqslant g\left(a_{m},y_{i}\right)\leqslant a_{k+1}\right\}$
+    \bigskip
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Lottery Rule}
+  \begin{itemize}
+    \item[--] We can think of this way of handling the discrete approximation to the density function as \textcolor{red}{forcing the agents in the economy to play a lottery}.
+    \bigskip
+    \item[--] If the optimal policy is to save $a'\in\left[a_{k},a_{k+1}\right]$, then with probability $\frac{a_{k+1}-a'}{a_{k+1}-a_{k}}$ you go to $a_{k}$, and with probability $\frac{a'-a_{k}}{a_{k+1}-a_{k}}$ you go to $a_{k+1}$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Eigenvector Method}
+  \begin{itemize}
+    \item[--] The invariant pdf for a Markov transition matrix $Q$ is $\lambda^{*}$ that satisfies $\lambda^{*}Q=\lambda^{*}$
+    \bigskip
+    \item[--] \textcolor{red}{Perron-Frobenius Theorem}: $Q$ has a unique dominant eigenvalue $\epsilon=1$ such that
+    \begin{itemize}
+      \medskip
+      \item[--] its associated eigenvector has all positive entries
+      \medskip
+      \item[--] all other eigenvalues are smaller than $\epsilon$ in absolute value
+      \medskip
+      \item[--] $Q$ has no other eigenvector with all non-negative entries
+    \end{itemize}
+    \bigskip
+    \item[--] This eigenvector (renormalized so that it sums to one) is the unique invariant distribution
+  \end{itemize}
+\end{frame}
+
+\end{document}

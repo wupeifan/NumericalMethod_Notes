@@ -1,0 +1,234 @@
+% \documentclass[handout]{beamer} % Suppress the pauses to print as handout
+\documentclass[aspectratio=169, 11pt]{beamer}
+% \documentclass[11pt]{beamer} % Comment the line above and use this line for 4:3 aspect ratio screens
+\usepackage{advdate}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{color}
+\usepackage{helvet}
+\usepackage{hyperref}
+\usepackage{mathpazo}
+\usepackage{multirow}
+
+\usetheme{CambridgeUS}
+\usecolortheme{dolphin}
+\usefonttheme[onlymath]{serif}
+
+% Define colors considering color blindness
+% Use MATLAB default color palette
+\definecolor{blue}{rgb}{0, 0.447, 0.741}
+\definecolor{red}{rgb}{0.85, 0.325, 0.098}
+\definecolor{yellow}{rgb}{0.929, 0.694, 0.125}
+\definecolor{purple}{rgb}{0.494, 0.184, 0.556}
+\definecolor{green}{rgb}{0.466, 0.674, 0.188}
+\definecolor{cyan}{rgb}{0.301, 0.745, 0.933}
+\definecolor{magenta}{rgb}{0.635, 0.078, 0.184}
+\definecolor{amber}{rgb}{1.0, 0.75, 0.0}
+
+% Self-defined background and frametitle colors
+\definecolor{MyBackground}{RGB}{255, 255, 230}
+% Uncomment the following line for plain white background
+% \definecolor{MyBackground}{RGB}{255, 255, 255}
+\setbeamercolor{background canvas}{bg=MyBackground!40}
+\setbeamercolor{frametitle}{bg=MyBackground!80}
+% Customize word colors
+\setbeamercolor{frametitle}{fg=blue}
+\setbeamercolor{title}{fg=blue}
+\setbeamercolor{itemize item}{fg=blue}
+\setbeamercolor{itemize subitem}{fg=blue}
+\setbeamercolor{enumerate item}{fg=blue}
+\setbeamercolor{enumerate subitem}{fg=blue}
+\setbeamercolor{button}{bg=MyBackground,fg=blue}
+
+% Page number on the bottom
+\setbeamertemplate{footline}[frame number]
+\setbeamerfont{footline}{size=\fontsize{10}{12}\selectfont}
+\setbeamercolor{page number in head/foot}{fg=blue}
+% No navigation symbols
+\setbeamertemplate{navigation symbols}{}
+% No headlines
+\setbeamertemplate{headline}{}
+% Appendix slides don't count
+\newcommand{\backupbegin}{
+   \newcounter{framenumberappendix}
+   \setcounter{framenumberappendix}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+   \addtocounter{framenumberappendix}{-\value{framenumber}}
+   \addtocounter{framenumber}{\value{framenumberappendix}}
+}
+% Add section title at the beginning of each part
+\AtBeginSection[]{
+  \begin{frame}[noframenumbering, plain]
+  \vfill
+  \centering
+    \begin{beamercolorbox}[sep=8pt, center, shadow=true, rounded=true]{title}
+      \usebeamerfont{frametitle}\insertsectionhead\par%
+    \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
+% New theorem environments
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+% Set pause options to be invisible instead of transparent
+\setbeamercovered{invisible}
+
+\begin{document}
+\title{Lecture 4 \\ Policy Function Iteration}
+\author[Wu]{Peifan Wu}
+\date{UBC}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Income Fluctuation Problem}
+  \begin{align*}
+    V\left(a,y\right) & =\max_{c,a'} u\left(c\right)+\beta\sum_{y'\in Y}\pi\left(y'|y\right)V\left(a',y'\right)\\
+    c+a' & \leqslant Ra+y\\
+    a' & \geqslant\underline{a}
+  \end{align*}
+  \bigskip
+  \textcolor{red}{Euler equation} reads
+  \[
+    u_{c}\left(Ra+y-a'\right)-\beta R\sum_{y'\in Y}\pi\left(y'|y\right)u_{c}\left(Ra'+y'-a''\right)\geqslant0
+  \]
+  where the strict inequality holds when the constraint is binding
+  \bigskip
+
+  Policy function iteration (and improvements):
+  \begin{itemize}
+    \item[--] PFI with linear interpolation
+    \item[--] \textcolor{red}{Endogenous grid method}
+    \item[--] \textcolor{red}{Envelope condition method}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Policy Function Iteration with Linear Interpolation}
+  \begin{itemize}
+    \item[1.] Construct a grid on the asset space $\left\{ a_{0},a_{1},\ldots,a_{m}\right\}$ with $a_{0}=\underline{a}$
+    \item[2.] Guess an initial vector of decision rules for $a'$ on the grid points, call it $\hat{a}_{0}\left(a_{i},y\right)$
+    \item[3.] For each point $\left(a_{i},y\right)$ on the grid, check whether the borrowing constraint binds, i.e.
+    \[
+      u_{c}\left(Ra_{i}+y-\textcolor{red}{\underline{a}}\right)-\beta R\sum_{y'\in Y}\pi\left(y'|y\right)u_{c}\left(R\textcolor{red}{\underline{a}}+y'-\hat{a}_{0}\left(\textcolor{red}{\underline{a}},y'\right)\right)>0
+    \]
+    \item[4.] If the inequality holds then the borrowing constraint binds. Set $\hat{a}_{0}\left(a_{i},y\right)=\underline{a}$ in this case. Otherwise we have an interior solution and we proceed to the next step.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Policy Function Iteration with Linear Interpolation}
+  \begin{itemize}
+    \item[5.] For each point $\left(a_{i},y\right)$ on the grid, use a \textcolor{blue}{nonlinear equation solver} to find the solution $a^{*}$ of the nonlinear equation
+    \[
+      u_{c}\left(Ra_{i}+y-\textcolor{red}{a^{*}}\right)-\beta R\sum_{y'\in Y}\pi\left(y'|y\right)u_{c}\left(R\textcolor{red}{a^{*}}+y'-\hat{a}_{0}\left(\textcolor{red}{a^{*}},y'\right)\right)=0
+    \]
+    We need to evaluate the function $\hat{a}_{0}$ outside grid points: assume it is \textcolor{blue}{piecewise linear}. Find the pair of adjacent grid points such that $a_{i}<a^{*}<a_{i+1}$ and then compute
+    \[
+      \hat{a}_{0}\left(a^{*},y'\right)=\hat{a}_{0}\left(a_{i},y'\right)+\left(a^{*}-a_{i}\right)\frac{\hat{a}_{0}\left(a_{i+1},y'\right)-\hat{a}_{0}\left(a_{i},y'\right)}{a_{i+1}-a_{i}}
+    \]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Policy Function Iteration with Linear Interpolation}
+  \begin{itemize}
+    \item[6.] \textcolor{red}{Check convergence} by comparing $a'_{0}-\hat{a}_{0}$ through some pre-specified norm, e.g.,
+    \[
+      \max\left\{ \left|a'_{n}\left(a_{i},y\right)-\hat{a}_{n}\left(a_{i},y\right)\right|\right\} <\epsilon
+    \]
+    \item[7.] Stop if convergence is achieved. Otherwise take new guess $\hat{a}_{1}=a'_{0}$ and go back to \textcolor{blue}{3.}
+
+    \bigskip
+    The \textcolor{red}{most time-consuming step} is \textcolor{blue}{5.}, the root-finding problem. By avoiding this step we can accelerate the process.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Endogenous Grid Method (EGM)}
+  \begin{itemize}
+    \item[--] EGM \textcolor{red}{does not require the use of a nonlinear equation solver} and hence much faster
+    \bigskip
+    \item[--] \textcolor{red}{Idea}: construct a grid on $a'$, next period's asset holdings, rather than on $a$
+    \bigskip
+    \item[--] This method requires the policy function to be \textcolor{red}{weakly monotonic}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{EGM Algorithm}
+  \begin{itemize}
+    \item[1.] Construct a grid for $(a,y)$ and guess a policy function $\hat{c}_{0}(a_{i},y_{j})$. If $y$ is persistent, a good initial guess if $\hat{c}_{0}(a_{i},y_{j})=ra_{i}+y_{j}$ which is the solution under quadratic utility if income follows a random walk
+    \medskip
+    \item[2.] Fix $y_{j}$. Instead of iterating over $a_{i}$ we iterate over $a'_{i}$. For any pair $\left\{ a_{i}',y_{j}\right\}$ on the mesh, construct the RHS of the Euler equation
+    \[
+      B\left(a_{i}',y_{j}\right)\equiv\beta R\sum_{y'\in Y}\pi\left(y'|y_{j}\right)u_{c}\left(\hat{c}_{0}\left(a_{i}',y'\right)\right)
+    \]
+    where the RHS of this equation uses the guess $\hat{c}_{0}$
+    \medskip
+    \item[3.] Use the Euler equation to solve for the value $\tilde{c}\left(a'_{i},y_{j}\right)$ that satisfies
+    \[
+      u_{c}\left(\tilde{c}\left(a'_{i},y_{j}\right)\right)=B\left(a_{i}',y_{j}\right)
+    \]
+    Note that it can be done analytically: for $u_c(c)=c^{-\gamma}$, $\tilde{c}\left(a'_{i},y_{j}\right)=\left[B\left(a_{i}',y_{j}\right)\right]^{-\frac{1}{\gamma}}$, hence \textcolor{red}{does not require a nonlinear solver}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{EGM Algorithm}
+  \begin{itemize}
+    \item[4.] From the budget constraint
+    \[
+      \tilde{c}\left(a_{i}',y_{j}\right)+a_{i}'=Ra_{i}^{*}+y_{j}
+    \]
+    solve for $a^{*}$ -- the value of assets today that would lead to consumer to have $a_{i}'$ assets tomorrow if her income shock was $y_{j}$ today. This is the \textcolor{red}{endogenous grid} on $a$ and it changes on each iteration
+    \bigskip
+    \item[5.] Let $a_{0}^{*}$ be the value of asset holdings that induces the borrowing constraint to bind next period. Now we need to update our guess \textcolor{red}{defined on the original grid} by interpolation
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Envelope Condition Method (ECM)}
+It is an alternative method that, in some cases, avoids the use of nonlinear solvers
+  \begin{itemize}
+    \bigskip
+    \item[1.] Construct a grid on $a$ with $n+1$ points, call it $\mathcal{A}^{V}$. Guess a value function $\hat{V}_{0}\left(a,y_{j}\right)=\sum_{k=0}^{n}w_{kj}^{0}B_{k}\left(a\right)$ where $B_{k}$ are piecewise linear splines
+    \bigskip
+    \item[2.] Define another grid on $a$ of size $n+1$, call it $\mathcal{A}^{D}$. Compute the derivative of the value function on the nodes of $\mathcal{A}^{D}$
+    \[
+      \tilde{V}_{0}'\left(a,y_{j}\right)=\sum_{k=0}^{n}w_{kj}^{0}B_{k}'\left(a\right)
+    \]
+    We need to use a different grid because $\tilde{V}_{0}$ is not differentiable on the nodes of the original grid $\mathcal{A}^{V}$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Envelope Condition Method (ECM)}
+  \begin{itemize}
+    \item[3.] For any pair of $\left(a,y\right)$ on $\mathcal{A}^{D}\times\mathcal{Y}$, apply envelope condition
+    \[
+      \tilde{V}_{0}'\left(a_{i},y_{j}\right)=u_{c}\left(Ra_{i}+y_{j}-\hat{a}_{0}\left(a_{i},y_{j}\right)\right)R
+    \]
+    from which we obtain
+    \[
+      \hat{a}_{0}\left(a_{i},y_{j}\right)=Ra_{i}+y_{j}-u_{c}^{-1}\left(\frac{\hat{V}_{0}'\left(a_{i},y_{j}\right)}{R}\right)
+    \]
+    \bigskip
+    \item[4.] Update the value function from the Bellman equation with the new policy function on the grid $\mathcal{A}^{V}$
+    \bigskip
+    \item[5.] Check convergence
+  \end{itemize}
+\end{frame}
+
+\end{document}
