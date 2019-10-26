@@ -8,6 +8,7 @@
 \usepackage{amssymb}
 \usepackage{array}
 \usepackage{color}
+\usepackage{graphicx}
 \usepackage{helvet}
 \usepackage{hyperref}
 \usepackage{mathpazo}
@@ -275,7 +276,14 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Newton/Quasi-Newton Methods}
+  \begin{figure}
+    \centering
+    \includegraphics[width = 4.5in]{Nelder_Mead.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Newton / Quasi-Newton Methods}
   \begin{itemize}
     \item[--] \textcolor{red}{Second-order} Taylor approximation of $f$ yields
     \[
@@ -296,7 +304,7 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Newton/Quasi-Newton Methods}
+\frametitle{Newton / Quasi-Newton Methods}
   \begin{itemize}
     \item[--] Computation of Hessian is time consuming -- that's where quasi-Newton methods come handy
     \bigskip
