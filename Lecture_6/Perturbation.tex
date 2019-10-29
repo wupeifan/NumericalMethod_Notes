@@ -102,4 +102,72 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{Perturbing Equations}
+  \begin{itemize}
+    \item[--] Want: find a solution $y=g\left(x\right)$ for equation system $f\left(x,y\right)=0$
+    \item[--] Steady state $f\left(\bar{x},\bar{y}\right)=0$
+    \bigskip
+    \item[--] (First-order) Taylor expansion of $f$
+    \[
+      f\left(x,g\left(x\right)\right)\approx f\left(\bar{x},\bar{y}\right)+\frac{\partial f}{\partial x}\left(\bar{x}\right)\left(x-\bar{x}\right)+\frac{\partial f}{\partial y}\left(\bar{y}\right)g'\left(\bar{x}\right)\left(x-\bar{x}\right)
+    \]
+    \bigskip
+    \item[--] Back out $g'\left(\bar{x}\right)$ and approximate the policy function $g\left(x\right)\approx g\left(\bar{x}\right)+\left(x-\bar{x}\right)g'\left(\bar{x}\right)$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Perturbing DSGE}
+  \begin{itemize}
+    \item[--] Equation system:  $\mathbb{E}_{t}\mathcal{H}\left(y',y,x',x;\sigma\right)=0$
+    \item[--] Want: \textcolor{blue}{policy function} $y=g\left(x;\sigma\right)$ and \textcolor{blue}{law of the motions} of the states $x'=h\left(x;\sigma\right)$
+    \bigskip
+    \item[--] Perturbation parameter is the variance scalar of the shocks, \textcolor{red}{$\sigma$}
+    \item[--] There can be multiple uncertainties, but \textcolor{red}{only one perturbation variable}
+    \bigskip
+    \item[--] Find approximate solution of $g$ and $h$ around $x=\bar{x},\sigma=0$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Perturbing DSGE}
+  \begin{itemize}
+    \item[--] Plug in the proposed solution
+    \[
+      F\left(x;\sigma\right)\equiv\mathbb{E}_{t}\mathcal{H}\left(g\left(h\left(x;\sigma\right)\right),g\left(x;\sigma\right),h\left(x;\sigma\right),x;\sigma\right)=0
+    \]
+    \bigskip
+    \item[--] $F=0$ for \textcolor{red}{any} values of $x$ and $\sigma$, so the directives at any direction should be $0$
+    \bigskip
+    \item[--] In particular, we take the derivatives around $x=\bar{x}, \sigma=0$
+    \[
+      F_{x^{i}\sigma^{j}}\left(\bar{x};0\right)=0,\forall i,j
+    \]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Perturbing DSGE}
+  \begin{itemize}
+    \item[--] We propose solution of $g,h$
+    \begin{align*}
+      g\left(x;\sigma\right) & =g\left(\bar{x};0\right)+g_{x}\left(x-\bar{x}\right)+g_{\sigma}\sigma\\
+      h\left(x;\sigma\right) & =h\left(\bar{x};0\right)+h_{x}\left(x-\bar{x}\right)+h_{\sigma}\sigma
+    \end{align*}
+    \bigskip
+    \item[--] $g_x,h_x,g_\sigma,h_\sigma$ should solve $F_x=0,F_\sigma=0$
+    \begin{align*}
+      F_{x} & =\mathcal{H}_{y'}g_{x}h_{x}+\mathcal{H}_{y}g_{x}+\mathcal{H}_{x'}h_{x}+\mathcal{H}_{x}=0\\
+      F_{\sigma} & =\mathcal{H}_{y'}g_{x}h_{\sigma}+\mathcal{H}_{y}g_{\sigma}+\mathcal{H}_{y}g_{\sigma}+\mathcal{H}_{x'}h_{\sigma}=0
+    \end{align*}
+    \bigskip
+    \item[--] Observations:
+    \begin{itemize}
+      \item[1.] The first equation is a linear-quadratic system. Typical solution method applies (Blanchard-Kahn, Klein, Sims \textit{gensys})
+      \item[2.] The second equation is homogeneous in $g_{\sigma}$ and $h_{\sigma}$ -- certainty equivalence
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
 \end{document}
