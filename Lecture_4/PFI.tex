@@ -162,7 +162,7 @@
     \bigskip
     \item[--] \textcolor{red}{Idea}: construct a grid on $a'$, next period's asset holdings, rather than on $a$
     \bigskip
-    \item[--] This method requires the policy function to be \textcolor{red}{weakly monotonic}
+    \item[--] This method requires the policy function to be \textcolor{red}{weakly monotonic} in the state
   \end{itemize}
 \end{frame}
 
@@ -200,7 +200,17 @@
 
 \begin{frame}
 \frametitle{Envelope Condition Method (ECM)}
-It is an alternative method that, in some cases, avoids the use of nonlinear solvers
+  \begin{itemize}
+    \item[--] An alternative method that, in some cases, avoids the use of nonlinear solvers
+    \bigskip
+    \item[--] Approximate the value function by polynomial interpolation, then we can evaluate the derivative of the value function
+    \bigskip
+    \item[--] Use envelope condition to pin down the policy functions
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Envelope Condition Method (ECM)}
   \begin{itemize}
     \bigskip
     \item[1.] Construct a grid on $a$ with $n+1$ points, call it $\mathcal{A}^{V}$. Guess a value function $\hat{V}_{0}\left(a,y_{j}\right)=\sum_{k=0}^{n}w_{kj}^{0}B_{k}\left(a\right)$ where $B_{k}$ are piecewise linear splines
@@ -209,6 +219,9 @@ It is an alternative method that, in some cases, avoids the use of nonlinear sol
     \[
       \tilde{V}_{0}'\left(a,y_{j}\right)=\sum_{k=0}^{n}w_{kj}^{0}B_{k}'\left(a\right)
     \]
+    The value function is interpolated by polynomials, and we can evaluate the derivative of the value function using the derivatives of interpolants \\
+    \medskip
+
     We need to use a different grid because $\tilde{V}_{0}$ is not differentiable on the nodes of the original grid $\mathcal{A}^{V}$
   \end{itemize}
 \end{frame}
@@ -224,9 +237,12 @@ It is an alternative method that, in some cases, avoids the use of nonlinear sol
     \[
       \hat{a}_{0}\left(a_{i},y_{j}\right)=Ra_{i}+y_{j}-u_{c}^{-1}\left(\frac{\hat{V}_{0}'\left(a_{i},y_{j}\right)}{R}\right)
     \]
-    \bigskip
-    \item[4.] Update the value function from the Bellman equation with the new policy function on the grid $\mathcal{A}^{V}$
-    \bigskip
+    \medskip
+    \item[4.] Update the value function from the Bellman equation with the new policy function. For each point of the grid $\mathcal{A}^{V}$, compute
+    \[
+      \tilde{V}_{1}\left(a_{i},y_{j}\right)=u\left(Ra_{i}+y_{j}-\tilde{a}_{0}\left(a_{i},y_{j}\right)\right)+\beta\sum_{y_{k}\in Y}\pi_{jk}\tilde{V}_{0}\left(\tilde{a}_{0}\left(a_{i},y_{j}\right),y_{k}'\right)
+    \]
+    \medskip
     \item[5.] Check convergence
   \end{itemize}
 \end{frame}
