@@ -151,4 +151,71 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{Parameterized Distribution}
+  \begin{itemize}
+    \item[--] For smooth and unimodal distributions we can approximate with parameterized functions in the \textcolor{red}{exponential families}
+    \bigskip
+    \item[--] Central moments are sufficient statistics of the distribution
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Parameterized Distribution}
+  \begin{itemize}
+    \item[--] To approximate a one-dimensional distribution on $k$, assume the density function form
+    \[
+      P\left(k,\rho\right)=\rho_{0}\exp\left(\begin{array}{c}
+      \rho_{1}\left(k-m_{1}\right)\\
+      +\rho_{2}\left[\left(k-m_{1}\right)^{2}-m_{2}\right]\\
+      +\rho_{3}\left[\left(k-m_{1}\right)^{3}-m_{3}\right]\\
+      \cdots\\
+      +\rho_{N}\left[\left(k-m_{1}\right)^{N}-m_{N}\right]
+      \end{array}\right)
+    \]
+    \item[--] $\rho$ -- parameters to pin down, $m$ -- central moments
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Parameterized Distribution}
+  \begin{itemize}
+    \item[--] We choose $\rho$ such that moment condition holds
+    \begin{align*}
+      \int\left(k-m_{1}\right)P\left(k,\rho\right)\mathrm{d}k & =0\\
+      \int\left[\left(k-m_{1}\right)^{2}-m_{2}\right]P\left(k,\rho\right)\mathrm{d}k & =0\\
+       & \cdots\\
+      \int\left[\left(k-m_{1}\right)^{N}-m_{N}\right]P\left(k,\rho\right)\mathrm{d}k & =0
+    \end{align*}
+    \item[--] These condition happen to be the optimal condition of
+    \[
+      \min_{\rho_{1},\ldots,\rho_{N}}\int P\left(k,\rho\right)\mathrm{d}k
+    \]
+    \item[--] And the distribution has to be normalized to unity
+    \[
+      \frac{1}{\rho_{0}}=\int P\left(k,\rho\right)\mathrm{d}k
+    \]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Parameterized Distribution}
+  Steps to compute invariant distribution:
+  \begin{itemize}
+    \item[1.] Choose capital grid $\left{k_{i}\right}$ and guess initial central moments $m_{j,0}$
+    \item[2.] Solve the minimization problem for $\rho$ with $m_{j,0}$
+    \[
+      \frac{1}{\rho_{0}}=\min_{\rho_{1},\ldots,\rho_{N}}\int P\left(k,\rho\right)\mathrm{d}k
+    \]
+    \item[3.] With current distribution $P\left(k,\rho\right)$, compute moments using policy function $g(k)$
+    \begin{align*}
+      m_{1,1} & =\int g\left(k\right)P\left(k,\rho\right)\mathrm{d}k\\
+      m_{2,1} & =\int\left(g\left(k\right)-m_{1,1}\right)^{2}P\left(k,\rho\right)\mathrm{d}k\\
+      & \cdots\\
+      m_{N,1} & =\int\left(g\left(k\right)-m_{1,1}\right)^{N}P\left(k,\rho\right)\mathrm{d}k
+    \end{align*}
+    \item[4.] Check convergence of $m$
+  \end{itemize}
+\end{frame}
+
 \end{document}
