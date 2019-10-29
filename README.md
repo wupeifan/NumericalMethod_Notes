@@ -8,3 +8,4 @@ Slides prepared for teaching numerical methods in quantitative macroeconomics, e
 1. Policy Function Iteration, Endogenous Grid Method, and Envelope Condition Method
 1. Approximating the Distribution
 1. Perturbation Methods
+1. Solving Models with Aggregate and Idiosyncratic Risks
