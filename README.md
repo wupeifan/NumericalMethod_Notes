@@ -1,5 +1,6 @@
 # Notes for Numerical Methods in Quantitative Macro
 Slides prepared for teaching numerical methods in quantitative macroeconomics, especially for heterogeneous agent models in general equilibrium with aggregate shocks.
+**WARNING: IN PROGRESS**
 
 ## Contents
 1. Root-finding, Optimization Methods, Numerical Integration
